@@ -25,9 +25,7 @@ void Edge::ClearForces() {
   std::fill(forces_.begin(), forces_.end(), Vector(0, 0));
 }
 
-void Edge::AddForces(const Edge& q) {
-  const double compat = Compatibility(q);
-
+void Edge::AddSpringForces() {
   for (size_t i = 1; i < points_.size() - 1; ++i) {
     // spring forces along edge
     Vector delta0 = points_[i-1] - points_[i];
@@ -42,6 +40,14 @@ void Edge::AddForces(const Edge& q) {
     const Vector Fs0 = delta0_dir * (K * delta0_len);
     const Vector Fs1 = delta1_dir * (K * delta1_len);
 
+    forces_[i] = forces_[i] + Fs0 + Fs1;
+  }
+}
+
+void Edge::AddElectrostaticForces(const Edge& q) {
+  const double compat = Compatibility(q);
+
+  for (size_t i = 1; i < points_.size() - 1; ++i) {
     // forces between edges
     Vector delta_e = points_[i] - q.points_[i];
     const double delta_e_len = delta_e.length();
@@ -49,7 +55,7 @@ void Edge::AddForces(const Edge& q) {
     const Vector delta_e_dir = delta_e / delta_e_len;
     const Vector Fe = delta_e_dir * (1.0 / delta_e_len);
 
-    forces_[i] = Fs0 + Fs1 + (compat * Fe);
+    forces_[i] = forces_[i] + (compat * Fe);
   }
 }
 

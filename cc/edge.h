@@ -15,7 +15,8 @@ class Edge {
 
   void ClearForces();
 
-  void AddForces(const Edge& q);
+  void AddSpringForces();
+  void AddElectrostaticForces(const Edge& q);
 
   // return true if update causes > EPSILON movement
   bool UpdatePositions(double dt);

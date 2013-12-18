@@ -17,15 +17,7 @@ Graph* CreateGraph() {
   std::cout << "Reading " << N << " edges\n";
   for (int i = 0; i < N; ++i) {
     double a0, z0, a1, z1;
-    char junk;
-    std::cin >> a0;
-    std::cin >> junk; assert(junk == ',');
-    std::cin >> z0;
-    std::cin >> junk; assert(junk == '-');
-    std::cin >> junk; assert(junk == '>');
-    std::cin >> a1;
-    std::cin >> junk; assert(junk == ',');
-    std::cin >> z1;
+    std::cin >> a0 >> z0 >> a1 >> z1;
     graph->AddEdge(Edge(Point(a0, z0), Point(a1, z1)));
   }
 
@@ -38,6 +30,8 @@ int main(int argc, const char* argv[]) {
   scoped_ptr<Graph> graph(CreateGraph());
 
   graph->Subdivide(NUM_SEGMENTS);
+
+  graph->Print();
 
   // Run simulation
   bool done = false;

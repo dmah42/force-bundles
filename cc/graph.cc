@@ -10,11 +10,12 @@ bool Graph::Step(double dt) {
   for (size_t i = 0; i < edges_.size(); ++i) {
     Edge& p = edges_[i];
     p.ClearForces();
+    p.AddSpringForces();
     for (size_t j = 0; j < edges_.size(); ++j) {
       if (i == j)
         continue;
       const Edge& q = edges_[j];
-      p.AddForces(q);
+      p.AddElectrostaticForces(q);
     }
   }
 

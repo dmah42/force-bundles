@@ -29,5 +29,5 @@ endif()
 file(GLOB_RECURSE SRC_FILES cc/*.cc)
 
 # Build the libraries
-add_executable(force-bundles ${SRC_FILES})
+add_executable(fb ${SRC_FILES})
 

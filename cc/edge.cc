@@ -1,6 +1,6 @@
 #include "edge.h"
 
-#define K (0.1)
+#define K (0.01)
 
 Edge::Edge(const Point& a, const Point& z) : points_(2, Point(0, 0)) {
   points_[0] = a;

@@ -37,14 +37,15 @@ Graph* CreateGraph() {
 int main(int argc, const char* argv[]) {
   scoped_ptr<Graph> graph(CreateGraph());
 
-  graph->Subdivide(NUM_SEGMENTS); 
-  
+  graph->Subdivide(NUM_SEGMENTS);
+
   // Run simulation
   bool done = false;
   while (!done) {
     done = graph->Step(DT);
   }
 
+  std::cout << "Done\n";
   graph->Print();
 
   return 0;

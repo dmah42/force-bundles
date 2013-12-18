@@ -1,4 +1,4 @@
-package main
+package fblib
 
 import (
 	"fmt"
@@ -10,14 +10,18 @@ const (
 )
 
 type Edge struct {
-	forces	[]Vector
-	velocities	[]Vector
-	vertices	[]Point
+	forces     []Vector
+	velocities []Vector
+	vertices   []Point
 }
 
-func (e *Edge) compatibility(q Edge) (float64) {
-	delta_p := e.vertices[len(e.vertices) - 1].Sub(e.vertices[0])
-	delta_q := q.vertices[len(q.vertices) - 1].Sub(q.vertices[0])
+func NewEdge(p0, p1 Point) *Edge {
+	return &Edge{forces: []Vector{}, velocities: []Vector{}, vertices: []Point{p0, p1},}
+}
+
+func (e *Edge) compatibility(q Edge) float64 {
+	delta_p := e.vertices[len(e.vertices)-1].Sub(e.vertices[0])
+	delta_q := q.vertices[len(q.vertices)-1].Sub(q.vertices[0])
 
 	len_p := delta_p.Length()
 	len_q := delta_q.Length()
@@ -27,11 +31,11 @@ func (e *Edge) compatibility(q Edge) (float64) {
 
 	// scale
 	len_avg := (len_p + len_q) / 2.0
-	Cs := 2.0 / (len_avg * math.Min(len_p, len_q) + math.Max(len_p, len_q) / len_avg)
+	Cs := 2.0 / (len_avg*math.Min(len_p, len_q) + math.Max(len_p, len_q)/len_avg)
 
 	// position
-	mid_p := e.vertices[len(e.vertices) / 2]
-	mid_q := q.vertices[len(q.vertices) / 2]
+	mid_p := e.vertices[len(e.vertices)/2]
+	mid_q := q.vertices[len(q.vertices)/2]
 	Cp := len_avg / (len_avg + mid_p.Sub(mid_q).Length())
 
 	// visibility
@@ -42,11 +46,11 @@ func (e *Edge) compatibility(q Edge) (float64) {
 }
 
 func (e *Edge) Subdivide(segments int) {
-	delta := e.vertices[len(e.vertices) - 1].Sub(e.vertices[0])
+	delta := e.vertices[len(e.vertices)-1].Sub(e.vertices[0])
 	subdelta := delta.Scale(1.0 / float64(segments))
 
-	newVertices := make([]Point, segments + 1)
-	newVertices[segments] = e.vertices[len(e.vertices) - 1]
+	newVertices := make([]Point, segments+1)
+	newVertices[segments] = e.vertices[len(e.vertices)-1]
 	for i := 0; i < segments; i++ {
 		newVertices[i] = e.vertices[0].Add(subdelta.Scale(float64(i)))
 	}
@@ -61,7 +65,7 @@ func (e *Edge) Subdivide(segments int) {
 
 func (e *Edge) ClearForces() {
 	for i, _ := range e.forces {
-		e.forces[i] = Vector {0, 0}
+		e.forces[i] = Vector{0, 0}
 	}
 }
 
@@ -69,7 +73,7 @@ func (e *Edge) AddSpringForces() {
 	if len(e.vertices) != len(e.forces) || len(e.vertices) != len(e.velocities) {
 		fmt.Println("WTF1")
 	}
-	for i := 1; i < len(e.vertices) - 1; i++ {
+	for i := 1; i < len(e.vertices)-1; i++ {
 		// spring forces
 		delta0 := e.vertices[i-1].Sub(e.vertices[i])
 		delta1 := e.vertices[i].Sub(e.vertices[i+1])
@@ -93,7 +97,7 @@ func (e *Edge) AddElectrostaticForces(q Edge) {
 		fmt.Println("WTF2")
 	}
 	compat := e.compatibility(q)
-	for i := 1; i < len(e.vertices) - 1; i++ {
+	for i := 1; i < len(e.vertices)-1; i++ {
 		// electrostatic forces
 		delta_e := e.vertices[i].Sub(q.vertices[i])
 		delta_e_len := delta_e.Length()
@@ -104,7 +108,7 @@ func (e *Edge) AddElectrostaticForces(q Edge) {
 	}
 }
 
-func (e *Edge) UpdatePositions(dt float64) (bool) {
+func (e *Edge) UpdatePositions(dt float64) bool {
 	if len(e.vertices) != len(e.forces) || len(e.vertices) != len(e.velocities) {
 		fmt.Println("WTF3")
 	}
@@ -122,4 +126,3 @@ func (e *Edge) UpdatePositions(dt float64) (bool) {
 	}
 	return moved
 }
-

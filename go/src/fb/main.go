@@ -1,36 +1,34 @@
 package main
 
 import (
+	"fblib"
 	"fmt"
 )
 
 const (
-	DT = 1.0 / 60
+	DT           = 1.0 / 60
 	NUM_SEGMENTS = 4
 )
 
-func createGraph() (*Graph, error) {
+func createGraph() (*fblib.Graph, error) {
 	var N int
 	fmt.Scan(&N)
 	fmt.Printf("Reading %d edges\n", N)
 
-	g := new(Graph)
+	g := new(fblib.Graph)
 	for i := 0; i < N; i++ {
 		var a0, z0, a1, z1 float64
 		if _, err := fmt.Scanf("%f %f %f %f", &a0, &z0, &a1, &z1); err != nil {
 			return nil, err
 		}
-		g.Add(Edge{
-			[]Vector{}, []Vector{},
-			[]Point{{a0, z0}, {a1, z1},},
-		})
+		g.Add(fblib.NewEdge(fblib.Point{a0, z0}, fblib.Point{a1, z1}))
 	}
 	fmt.Printf("Create\n  %+v\n", g)
 	return g, nil
 }
 
 func main() {
-	g, err := createGraph();
+	g, err := createGraph()
 	if err != nil {
 		fmt.Printf("ERROR: %q\n", err)
 		return

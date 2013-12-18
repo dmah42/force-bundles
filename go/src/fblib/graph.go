@@ -1,11 +1,11 @@
-package main
+package fblib
 
 type Graph struct {
-	edges	[]Edge
+	edges []Edge
 }
 
-func (g *Graph) Add(e Edge) {
-	g.edges = append(g.edges, e)
+func (g *Graph) Add(e *Edge) {
+	g.edges = append(g.edges, *e)
 }
 
 func (g *Graph) Subdivide(segments int) {
@@ -35,4 +35,3 @@ func (g *Graph) Step(dt float64) bool {
 	}
 	return done
 }
-
